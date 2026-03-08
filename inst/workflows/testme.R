@@ -77,6 +77,14 @@ file.copy(
   to = publish_dir,
   recursive = TRUE
 )
+unlink(site_build_dir, recursive = TRUE, force = TRUE)
+unlink(file.path(source_docs_dir, ".quarto"), recursive = TRUE, force = TRUE)
+unlink(file.path(source_docs_dir, "reference"), recursive = TRUE, force = TRUE)
+unlink(file.path(source_docs_dir, "objects.json"), recursive = FALSE, force = TRUE)
+
+if (!file.exists(file.path(publish_dir, "index.html"))) {
+  stop("Rendered homepage not found: ", file.path(publish_dir, "index.html"), call. = FALSE)
+}
 
 message("Local published copy ready at: ", publish_dir)
 message("Starting local server at http://127.0.0.1:4848 (Ctrl+C to stop)...")

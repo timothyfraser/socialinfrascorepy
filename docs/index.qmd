@@ -3,6 +3,8 @@ title: "socialinfrascorepy"
 subtitle: "Map Social Infrastructure in Your Neighborhood"
 ---
 
+<img src="icon_py_trimmed.png" align="right" height="500" alt="socialinfrascorepy logo" class="si-home-logo" />
+
 **socialinfrascorepy** lets you use the
 [Social Infrastructure Scorecard](https://github.com/timothyfraser/scorecard)
 from Python.  View social infrastructure sites (parks, community spaces,

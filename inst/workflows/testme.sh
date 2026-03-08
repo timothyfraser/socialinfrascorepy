@@ -4,7 +4,8 @@ set -euo pipefail
 # Local preview for socialinfrascorepy docs, matching Netlify publish folder.
 # - Build quartodoc pages from socialinfrascorepy/docs/_quarto.yml
 # - Render Quarto site from socialinfrascorepy/docs
-# - Copy output to docs/socialinfrascorepy
+# - Sync output to docs/socialinfrascorepy
+# - Remove transient socialinfrascorepy/docs/_site build output
 # - Serve docs/socialinfrascorepy at http://127.0.0.1:4848
 
 if ! command -v python >/dev/null 2>&1; then
@@ -58,6 +59,12 @@ echo "3/4 Syncing rendered site to docs/socialinfrascorepy..."
 rm -rf "$publish_dir"
 mkdir -p "$publish_dir"
 cp -a "$site_build"/. "$publish_dir"/
+rm -rf "$site_build" "$source_docs/.quarto" "$source_docs/reference" "$source_docs/objects.json"
+
+if [[ ! -f "$publish_dir/index.html" ]]; then
+  echo "Error: expected rendered homepage missing: $publish_dir/index.html" >&2
+  exit 1
+fi
 
 echo "4/4 Serving local site at http://127.0.0.1:4848"
 echo "Press Ctrl+C to stop."

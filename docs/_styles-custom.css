@@ -88,3 +88,9 @@ dt {
 mark, .search-highlight {
   background-color: rgba(240, 249, 33, 0.35);
 }
+
+.si-home-logo {
+  max-height: 240px;
+  width: auto;
+  margin-left: 1rem;
+}
