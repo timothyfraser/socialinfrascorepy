@@ -1,0 +1,27 @@
+# get_themes { #socialinfrascorepy.get_themes }
+
+```python
+get_themes(client)
+```
+
+List available social-infrastructure themes.
+
+Authentication is optional; the endpoint is public.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type     | Description                                       | Default    |
+|--------|----------|---------------------------------------------------|------------|
+| client | SIClient | A client from :func:`~socialinfrascorepy.client`. | _required_ |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                  |
+|--------|------------------|--------------------------------------------------------------|
+|        | pandas.DataFrame | A DataFrame with columns ``theme`` (int) and ``type`` (str). |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> themes = si.get_themes(cli)
+```

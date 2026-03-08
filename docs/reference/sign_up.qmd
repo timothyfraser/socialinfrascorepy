@@ -1,0 +1,30 @@
+# sign_up { #socialinfrascorepy.sign_up }
+
+```python
+sign_up(client, email, password, name=None)
+```
+
+Sign up a new user.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type     | Description                                       | Default    |
+|----------|----------|---------------------------------------------------|------------|
+| client   | SIClient | A client from :func:`~socialinfrascorepy.client`. | _required_ |
+| email    | str      | User email address.                               | _required_ |
+| password | str      | User password.                                    | _required_ |
+| name     | str      | Display name stored in user metadata.             | `None`     |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                                                    |
+|--------|--------|------------------------------------------------------------------------------------------------------------------------------------------------|
+|        | dict   | A dictionary with keys ``client`` (:class:`SIClient` carrying session tokens when immediately available), ``session``, ``user``, and ``data``. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> result = si.sign_up(cli, "you@example.com", "strong-password",
+...                     name="Your Name")
+>>> authed = result["client"]
+```

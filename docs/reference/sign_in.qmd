@@ -1,0 +1,28 @@
+# sign_in { #socialinfrascorepy.sign_in }
+
+```python
+sign_in(client, email, password)
+```
+
+Sign in with email and password.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type     | Description                                       | Default    |
+|----------|----------|---------------------------------------------------|------------|
+| client   | SIClient | A client from :func:`~socialinfrascorepy.client`. | _required_ |
+| email    | str      | User email address.                               | _required_ |
+| password | str      | User password.                                    | _required_ |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                     |
+|--------|--------|-------------------------------------------------------------------------------------------------|
+|        | dict   | A dictionary with keys ``client`` (authenticated :class:`SIClient`), ``session``, and ``data``. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+>>> authed = auth["client"]
+```

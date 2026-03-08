@@ -1,0 +1,32 @@
+# get_boundary_by_place_name { #socialinfrascorepy.get_boundary_by_place_name }
+
+```python
+get_boundary_by_place_name(client, query, country=None, state=None)
+```
+
+Get boundary by place name.
+
+Resolves a single boundary polygon from a place-name search.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type     | Description                                                                                              | Default    |
+|---------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client  | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| query   | str      | Place name to resolve.                                                                                   | _required_ |
+| country | str      | Country filter.                                                                                          | `None`     |
+| state   | str      | State / region filter.                                                                                   | `None`     |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                           |
+|--------|------------------|-----------------------------------------------------------------------|
+|        | pandas.DataFrame | A single-row DataFrame with boundary geometry, or empty if not found. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> boundary = si.get_boundary_by_place_name(
+...     authed, query="Ithaca", state="NY"
+... )
+```

@@ -1,0 +1,71 @@
+# Function reference {.doc .doc-index}
+
+## Client Setup
+
+Create and configure the API client.
+
+| | |
+| --- | --- |
+| [client](client.qmd#socialinfrascorepy.client) | Create a socialinfrascorepy API client. |
+| [SIClient](SIClient.qmd#socialinfrascorepy.SIClient) | Lightweight, immutable configuration object used by every API call. |
+
+## Authentication
+
+User sign-up, sign-in, password reset, and account deletion.
+
+| | |
+| --- | --- |
+| [sign_up](sign_up.qmd#socialinfrascorepy.sign_up) | Sign up a new user. |
+| [sign_in](sign_in.qmd#socialinfrascorepy.sign_in) | Sign in with email and password. |
+| [send_password_reset](send_password_reset.qmd#socialinfrascorepy.send_password_reset) | Request a password-reset email for the signed-in user. |
+| [delete_account](delete_account.qmd#socialinfrascorepy.delete_account) | Delete the currently authenticated account. |
+
+## Polygon Lookup
+
+Search and retrieve neighborhood boundaries.
+
+| | |
+| --- | --- |
+| [search_locations](search_locations.qmd#socialinfrascorepy.search_locations) | Search for locations by place name. |
+| [get_boundary_by_osm_id](get_boundary_by_osm_id.qmd#socialinfrascorepy.get_boundary_by_osm_id) | Get boundary by OpenStreetMap ID. |
+| [get_boundary_by_location_id](get_boundary_by_location_id.qmd#socialinfrascorepy.get_boundary_by_location_id) | Get boundary by location ID. |
+| [get_boundary_by_area_id](get_boundary_by_area_id.qmd#socialinfrascorepy.get_boundary_by_area_id) | Get boundary by area ID. |
+| [get_boundary_by_place_name](get_boundary_by_place_name.qmd#socialinfrascorepy.get_boundary_by_place_name) | Get boundary by place name. |
+
+## Themes and Keywords
+
+Browse available social-infrastructure themes and keywords.
+
+| | |
+| --- | --- |
+| [get_themes](get_themes.qmd#socialinfrascorepy.get_themes) | List available social-infrastructure themes. |
+| [get_theme_keywords](get_theme_keywords.qmd#socialinfrascorepy.get_theme_keywords) | List keywords for given theme IDs. |
+
+## Scorecard and Sites
+
+Retrieve scorecard results and social-infrastructure sites.
+
+| | |
+| --- | --- |
+| [get_scorecard](get_scorecard.qmd#socialinfrascorepy.get_scorecard) | Get scorecard results for a location. |
+| [get_sites](get_sites.qmd#socialinfrascorepy.get_sites) | Get social-infrastructure sites for a location. |
+
+## Requests
+
+Submit requests and track processing status.
+
+| | |
+| --- | --- |
+| [submit_request](submit_request.qmd#socialinfrascorepy.submit_request) | Submit a scorecard request for a new area. |
+| [get_request_status](get_request_status.qmd#socialinfrascorepy.get_request_status) | Get status of a submitted request. |
+| [get_requests](get_requests.qmd#socialinfrascorepy.get_requests) | Get request history for the current user. |
+
+## Account and Usage
+
+Subscription tier, usage summary, and remaining quota.
+
+| | |
+| --- | --- |
+| [get_subscription](get_subscription.qmd#socialinfrascorepy.get_subscription) | Get current subscription profile. |
+| [get_usage](get_usage.qmd#socialinfrascorepy.get_usage) | Get usage summary for a date range. |
+| [get_remaining_queries](get_remaining_queries.qmd#socialinfrascorepy.get_remaining_queries) | Get remaining monthly query quota. |

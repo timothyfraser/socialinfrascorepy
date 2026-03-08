@@ -1,0 +1,16 @@
+# SIClient { #socialinfrascorepy.SIClient }
+
+```python
+SIClient(supabase_url, anon_key, access_token=None, refresh_token=None)
+```
+
+Lightweight, immutable configuration object used by every API call.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+| Name          | Type        | Description                                                  |
+|---------------|-------------|--------------------------------------------------------------|
+| supabase_url  | str         | Supabase project URL (e.g. ``https://project.supabase.co``). |
+| anon_key      | str         | Supabase anon / publishable API key.                         |
+| access_token  | str or None | Authenticated access token (populated after sign-in).        |
+| refresh_token | str or None | Refresh token (populated after sign-in).                     |

@@ -1,0 +1,90 @@
+/*
+ * socialinfrascorepy quartodoc theme — viridis plasma palette
+ *
+ * Key colors derived from the package icon:
+ *   Deep indigo:  #0d0887
+ *   Purple:       #7e03a8
+ *   Magenta:      #cc4778
+ *   Orange:       #f89441
+ *   Yellow:       #f0f921
+ */
+
+:root {
+  --si-indigo:  #0d0887;
+  --si-purple:  #7e03a8;
+  --si-magenta: #cc4778;
+  --si-orange:  #f89441;
+  --si-yellow:  #f0f921;
+}
+
+.navbar {
+  background: linear-gradient(135deg, var(--si-indigo), var(--si-purple)) !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .navbar-text {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: var(--si-yellow) !important;
+}
+
+.navbar .nav-link.active {
+  color: var(--si-yellow) !important;
+  border-bottom: 2px solid var(--si-yellow);
+}
+
+a {
+  color: var(--si-purple);
+}
+
+a:hover,
+a:focus {
+  color: var(--si-indigo);
+}
+
+h1, h2, h3, h4 {
+  color: var(--si-indigo);
+}
+
+.page-header {
+  border-bottom: 3px solid var(--si-magenta);
+}
+
+code {
+  color: var(--si-purple);
+}
+
+pre {
+  border-left: 4px solid var(--si-magenta);
+}
+
+footer {
+  border-top: 3px solid var(--si-orange);
+}
+
+.btn-primary {
+  background-color: var(--si-indigo);
+  border-color: var(--si-indigo);
+}
+
+.btn-primary:hover {
+  background-color: var(--si-purple);
+  border-color: var(--si-purple);
+}
+
+dt {
+  color: var(--si-indigo);
+}
+
+.sidebar .nav-link.active {
+  color: var(--si-purple);
+  font-weight: 600;
+}
+
+mark, .search-highlight {
+  background-color: rgba(240, 249, 33, 0.35);
+}

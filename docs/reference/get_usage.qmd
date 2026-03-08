@@ -1,0 +1,27 @@
+# get_usage { #socialinfrascorepy.get_usage }
+
+```python
+get_usage(client, start_date=None, end_date=None)
+```
+
+Get usage summary for a date range.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type     | Description                                                                                              | Default    |
+|------------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client     | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| start_date | str      | Start date in ``YYYY-MM-DD`` format.                                                                     | `None`     |
+| end_date   | str      | End date in ``YYYY-MM-DD`` format.                                                                       | `None`     |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                               |
+|--------|------------------|-------------------------------------------|
+|        | pandas.DataFrame | Usage metrics from ``fn_get_user_usage``. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> usage = si.get_usage(authed, start_date="2025-01-01")
+```

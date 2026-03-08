@@ -1,0 +1,27 @@
+# get_requests { #socialinfrascorepy.get_requests }
+
+```python
+get_requests(client, limit=100, offset=0)
+```
+
+Get request history for the current user.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type     | Description                                                                                              | Default    |
+|--------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| limit  | int      | Maximum rows (hard-capped at 500).                                                                       | `100`      |
+| offset | int      | Pagination offset.                                                                                       | `0`        |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description   |
+|--------|------------------|---------------|
+|        | pandas.DataFrame | Request rows. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> history = si.get_requests(authed)
+```

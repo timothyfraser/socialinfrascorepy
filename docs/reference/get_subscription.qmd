@@ -1,0 +1,25 @@
+# get_subscription { #socialinfrascorepy.get_subscription }
+
+```python
+get_subscription(client)
+```
+
+Get current subscription profile.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type     | Description                                                                                              | Default    |
+|--------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                                 |
+|--------|------------------|-----------------------------------------------------------------------------|
+|        | pandas.DataFrame | A single-row DataFrame with the user's profile including subscription tier. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> profile = si.get_subscription(authed)
+```

@@ -1,0 +1,26 @@
+# get_boundary_by_osm_id { #socialinfrascorepy.get_boundary_by_osm_id }
+
+```python
+get_boundary_by_osm_id(client, osm_id)
+```
+
+Get boundary by OpenStreetMap ID.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type     | Description                                                                                              | Default    |
+|--------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| osm_id | int      | Numeric OSM identifier.                                                                                  | _required_ |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                           |
+|--------|------------------|-----------------------------------------------------------------------|
+|        | pandas.DataFrame | A single-row DataFrame with boundary geometry, or empty if not found. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
+```

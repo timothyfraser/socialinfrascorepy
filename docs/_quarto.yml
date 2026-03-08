@@ -35,9 +35,8 @@ metadata-files:
 
 format:
   html:
-    theme:
-      - flatly
-      - _styles-custom.css
+    theme: flatly
+    css: _styles-custom.css
     toc: true
 
 quartodoc:

@@ -1,0 +1,28 @@
+# get_theme_keywords { #socialinfrascorepy.get_theme_keywords }
+
+```python
+get_theme_keywords(client, theme_ids=None)
+```
+
+List keywords for given theme IDs.
+
+Authentication is optional; the endpoint is public.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name      | Type                      | Description                                                                                      | Default    |
+|-----------|---------------------------|--------------------------------------------------------------------------------------------------|------------|
+| client    | SIClient                  | A client from :func:`~socialinfrascorepy.client`.                                                | _required_ |
+| theme_ids | list of int, str, or None | Integer sequence or comma-separated string of theme IDs. Pass ``None`` to retrieve all keywords. | `None`     |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                 |
+|--------|------------------|-------------------------------------------------------------|
+|        | pandas.DataFrame | A DataFrame with columns ``theme``, ``type``, and ``term``. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> kw = si.get_theme_keywords(cli, theme_ids=[1, 3, 4])
+```

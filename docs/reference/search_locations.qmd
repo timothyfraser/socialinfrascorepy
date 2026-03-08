@@ -1,0 +1,29 @@
+# search_locations { #socialinfrascorepy.search_locations }
+
+```python
+search_locations(client, query, country=None, state=None, limit=5)
+```
+
+Search for locations by place name.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type     | Description                                                                                              | Default    |
+|---------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client  | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| query   | str      | Place name to search.                                                                                    | _required_ |
+| country | str      | Country filter.                                                                                          | `None`     |
+| state   | str      | State / region filter.                                                                                   | `None`     |
+| limit   | int      | Maximum rows to return (hard-capped at 5).                                                               | `5`        |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description             |
+|--------|------------------|-------------------------|
+|        | pandas.DataFrame | Matching location rows. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> candidates = si.search_locations(authed, query="Ithaca", state="NY")
+```

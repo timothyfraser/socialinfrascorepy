@@ -1,0 +1,29 @@
+# get_request_status { #socialinfrascorepy.get_request_status }
+
+```python
+get_request_status(client, request_id)
+```
+
+Get status of a submitted request.
+
+Row-level security restricts results to the authenticated user's
+own requests.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type     | Description                                                                                              | Default    |
+|------------|----------|----------------------------------------------------------------------------------------------------------|------------|
+| client     | SIClient | A client from :func:`~socialinfrascorepy.client` authenticated with :func:`~socialinfrascorepy.sign_in`. | _required_ |
+| request_id | str      | Request UUID string.                                                                                     | _required_ |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                    |
+|--------|------------------|------------------------------------------------|
+|        | pandas.DataFrame | A single-row DataFrame, or empty if not found. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> status = si.get_request_status(authed, result["request"]["id"])
+```

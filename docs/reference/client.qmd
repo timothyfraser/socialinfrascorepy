@@ -1,0 +1,38 @@
+# client { #socialinfrascorepy.client }
+
+```python
+client(supabase_url, anon_key, access_token=None, refresh_token=None)
+```
+
+Create a socialinfrascorepy API client.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name          | Type   | Description                                                  | Default    |
+|---------------|--------|--------------------------------------------------------------|------------|
+| supabase_url  | str    | Supabase project URL (e.g. ``https://project.supabase.co``). | _required_ |
+| anon_key      | str    | Supabase anon / publishable API key.                         | _required_ |
+| access_token  | str    | Authenticated access token.                                  | `None`     |
+| refresh_token | str    | Refresh token.                                               | `None`     |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                            |
+|--------|----------|--------------------------------------------------------|
+|        | SIClient | A client object passed to all other package functions. |
+
+## Raises {.doc-section .doc-section-raises}
+
+| Name   | Type             | Description                               |
+|--------|------------------|-------------------------------------------|
+|        | SIScorecardError | If *supabase_url* or *anon_key* is empty. |
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+>>> import os, socialinfrascorepy as si
+>>> cli = si.client(
+...     os.environ["SUPABASE_URL"],
+...     os.environ["SUPABASE_ANON_KEY"],
+... )
+```
