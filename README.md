@@ -6,6 +6,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+<img src="docs/icon_py_trimmed.png" align="right" height="300" alt="socialinfrascorer logo" class="si-home-logo" />
+
 **`socialinfrascorepy`** lets you use the [Social Infrastructure Scorecard](https://github.com/timothyfraser/scorecard)
 from Python.
 View social infrastructure sites (parks, community spaces, places of worship, and more),
@@ -13,6 +15,8 @@ request scorecards for new areas, and download results for analysis.
 
 > Looking for R? See the companion package,
 > **[`socialinfrascorer`](https://timothyfraser.github.io/scorecard/socialinfrascorer/)**.
+
+----
 
 ## Installation
 
