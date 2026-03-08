@@ -1,0 +1,21 @@
+---
+title: "Dashboard (Coming Soon)"
+---
+
+The Social Infrastructure Scorecard Dashboard is a web interface that will make
+it easy to explore neighborhood scores, inspect underlying sites, and submit
+new scorecard requests without writing code.
+
+## What to expect
+
+- Interactive map views of social infrastructure by neighborhood
+- On-demand scorecard lookups and downloadable results
+- Account-aware usage and request status tracking
+- Direct compatibility with `socialinfrascorepy` workflows
+
+## Status
+
+**Coming soon.**
+
+For early access and updates, follow the main repository:
+<https://github.com/timothyfraser/scorecard>

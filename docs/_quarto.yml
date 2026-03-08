@@ -1,0 +1,96 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "socialinfrascorepy"
+  description: >
+    Python client for the Social Infrastructure Scorecard. Authenticate,
+    look up neighborhoods, submit scoring requests, and retrieve results
+    through Supabase.
+  navbar:
+    left:
+      - text: Get Started
+        href: get-started.qmd
+      - text: Reference
+        href: reference/index.qmd
+      - text: Articles
+        menu:
+          - text: Dashboard
+            href: dashboard.qmd
+          - text: Client API Reference
+            href: client-api.qmd
+          - text: Workflows
+            href: workflows.qmd
+    right:
+      - icon: github
+        href: https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorepy
+  sidebar:
+    - id: reference
+      contents:
+        - reference/index.qmd
+
+metadata-files:
+  - reference/_sidebar.yml
+
+format:
+  html:
+    theme:
+      - flatly
+      - _styles-custom.css
+    toc: true
+
+quartodoc:
+  package: socialinfrascorepy
+  dir: reference
+  sidebar: reference/_sidebar.yml
+  style: pkgdown
+  sections:
+    - title: Client Setup
+      desc: Create and configure the API client.
+      contents:
+        - client
+        - SIClient
+
+    - title: Authentication
+      desc: User sign-up, sign-in, password reset, and account deletion.
+      contents:
+        - sign_up
+        - sign_in
+        - send_password_reset
+        - delete_account
+
+    - title: Polygon Lookup
+      desc: Search and retrieve neighborhood boundaries.
+      contents:
+        - search_locations
+        - get_boundary_by_osm_id
+        - get_boundary_by_location_id
+        - get_boundary_by_area_id
+        - get_boundary_by_place_name
+
+    - title: Themes and Keywords
+      desc: Browse available social-infrastructure themes and keywords.
+      contents:
+        - get_themes
+        - get_theme_keywords
+
+    - title: Scorecard and Sites
+      desc: Retrieve scorecard results and social-infrastructure sites.
+      contents:
+        - get_scorecard
+        - get_sites
+
+    - title: Requests
+      desc: Submit requests and track processing status.
+      contents:
+        - submit_request
+        - get_request_status
+        - get_requests
+
+    - title: Account and Usage
+      desc: Subscription tier, usage summary, and remaining quota.
+      contents:
+        - get_subscription
+        - get_usage
+        - get_remaining_queries

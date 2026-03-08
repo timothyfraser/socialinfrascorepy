@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "socialinfrascorepy"
+version = "0.1.0"
+description = "Python client for the Social Infrastructure Scorecard."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Timothy Fraser", email = "tmf77@cornell.edu"},
+    {name = "Nabira Ahmad"},
+]
+keywords = ["social-infrastructure", "scorecard", "supabase", "gis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+    "requests>=2.28",
+    "pandas>=1.5",
+]
+
+[project.optional-dependencies]
+geo = ["geopandas>=0.12"]
+docs = ["quartodoc"]
+dev = ["pytest", "quartodoc"]
+
+[project.urls]
+Homepage = "https://timothyfraser.github.io/scorecard/socialinfrascorepy/"
+Repository = "https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorepy"
+Issues = "https://github.com/timothyfraser/scorecard/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/socialinfrascorepy"]

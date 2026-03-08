@@ -1,0 +1,75 @@
+---
+title: "socialinfrascorepy"
+subtitle: "Map Social Infrastructure in Your Neighborhood"
+---
+
+**socialinfrascorepy** lets you use the
+[Social Infrastructure Scorecard](https://github.com/timothyfraser/scorecard)
+from Python.  View social infrastructure sites (parks, community spaces,
+places of worship, and more), request scorecards for new areas, and download
+results for analysis.
+
+> Looking for R?  See the companion package,
+> **[socialinfrascorer](https://timothyfraser.github.io/scorecard/socialinfrascorer/)**.
+
+## Installation
+
+```bash
+pip install git+https://github.com/timothyfraser/scorecard.git#subdirectory=socialinfrascorepy
+```
+
+## Quick start
+
+```python
+import os
+import socialinfrascorepy as si
+
+cli = si.client(
+    os.environ["SUPABASE_URL"],
+    os.environ["SUPABASE_ANON_KEY"],
+)
+
+auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+authed = auth["client"]
+
+poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
+scores = si.get_scorecard(authed, osm_id=5128581)
+```
+
+See the [Getting Started](get-started.qmd) guide for a complete walkthrough.
+
+## Key capabilities
+
+| Area | Functions |
+|------|-----------|
+| **Auth** | `sign_up()`, `sign_in()`, `send_password_reset()`, `delete_account()` |
+| **Boundaries** | `search_locations()`, `get_boundary_by_osm_id()`, `get_boundary_by_place_name()`, ... |
+| **Themes** | `get_themes()`, `get_theme_keywords()` |
+| **Requests** | `submit_request()`, `get_request_status()`, `get_requests()` |
+| **Scorecard** | `get_scorecard()`, `get_sites()` |
+| **Account** | `get_subscription()`, `get_usage()`, `get_remaining_queries()` |
+
+## Environment variables
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `SUPABASE_URL` | Always | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+
+## Methodology
+
+The querying strategy is based on:
+
+> Fraser, T. et al. (2022). Trust but verify: Validating new measures for
+> mapping social infrastructure in cities. *Urban Climate*, 46, 101287.
+> <https://doi.org/10.1016/j.uclim.2022.101287>
+
+The scorecard measures three dimensions of social infrastructure:
+**density**, **diversity**, and **dispersion**, combined into a composite
+letter-grade score.
+
+## Credits
+
+Developed by **Tim Fraser** and **Nabira Ahmad**.
+
+For questions, contact **Tim Fraser** at <tmf77@cornell.edu>.

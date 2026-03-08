@@ -1,0 +1,131 @@
+---
+title: "Client API reference"
+---
+
+This article documents every user-facing function in **socialinfrascorepy**,
+grouped by capability area.  All functions communicate through Supabase Auth
+and PostgREST.  No private API URL is required.
+
+## Environment requirements
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `SUPABASE_URL` | Always | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+
+**Credentials and safety:** The `SUPABASE_URL` is public.  Use only the anon
+(publishable) key client-side; never expose a service-role or secret key.
+
+## Client setup
+
+```python
+import os
+import socialinfrascorepy as si
+
+cli = si.client(
+    supabase_url=os.environ["SUPABASE_URL"],
+    anon_key=os.environ["SUPABASE_ANON_KEY"],
+    access_token=None,
+    refresh_token=None,
+)
+```
+
+`client()` returns a lightweight `SIClient` dataclass that stores connection
+parameters and (after sign-in) session tokens.
+
+## Authentication
+
+```python
+si.sign_up(client, email, password, name=None)
+si.sign_in(client, email, password)
+si.send_password_reset(client)
+si.delete_account(client)
+```
+
+- `sign_up()` registers a new user; an authenticated client is returned
+  in `"client"` when the session is created immediately.
+- `sign_in()` authenticates and returns `"client"` (with tokens),
+  `"session"`, and the raw `"data"`.
+- `send_password_reset()` requires a signed-in session and triggers
+  a reset email for the authenticated user.
+- `delete_account()` calls a server-side RPC that deletes the
+  authenticated user.
+
+## Themes and keywords
+
+```python
+si.get_themes(client)
+si.get_theme_keywords(client, theme_ids=None)
+```
+
+- `get_themes()` lists all available social-infrastructure themes.
+- `get_theme_keywords()` returns keywords for selected theme IDs
+  (or all themes when `None`).
+
+## Polygon lookup
+
+```python
+si.search_locations(client, query, country=None, state=None, limit=5)
+si.get_boundary_by_osm_id(client, osm_id)
+si.get_boundary_by_location_id(client, location_id)
+si.get_boundary_by_area_id(client, area_id)
+si.get_boundary_by_place_name(client, query, country=None, state=None)
+```
+
+Lookup functions return boundary geometry as a `pandas.DataFrame`.
+`search_locations()` returns candidate rows for fuzzy matching;
+`get_boundary_by_place_name()` resolves to a single boundary.
+
+## Scorecard and sites
+
+```python
+si.get_scorecard(client, osm_id=None, location_id=None, limit=100, offset=0)
+si.get_sites(client, location_id, limit=1000)
+```
+
+- `get_scorecard()` returns density, diversity, dispersion, and composite
+  scores.  Filter by either `osm_id` or `location_id`.
+- `get_sites()` returns a random sample of social-infrastructure sites
+  within the given location (capped at `limit`).
+
+## Request workflow
+
+```python
+si.submit_request(
+    client,
+    geometry,
+    n_keywords=None,
+    name=None,
+    display_name=None,
+    place_name=None,
+    country="US",
+    state=None,
+    theme_ids=None,
+    sites_grid_sqkm=2,
+)
+
+si.get_request_status(client, request_id)
+si.get_requests(client, limit=100, offset=0)
+```
+
+### Parameters for `submit_request()`
+
+- **`geometry`** --- GeoJSON geometry dict or JSON string (Polygon /
+  MultiPolygon, CRS 4326).
+- **`theme_ids`** --- list of int or CSV string (e.g. `[1, 3, 4]` or
+  `"1,3,4"`).  Selects keyword groups for site ingestion.
+- **`sites_grid_sqkm`** --- cell size for the ephemeral query grid used
+  during Google Places ingestion (default 2 sq km).
+
+## Account and usage
+
+```python
+si.get_subscription(client)
+si.get_usage(client, start_date=None, end_date=None)
+si.get_remaining_queries(client)
+```
+
+- `get_subscription()` returns the user's profile including tier.
+- `get_usage()` summarises request and query counts in a date range.
+- `get_remaining_queries()` returns the remaining monthly quota for the
+  authenticated user.

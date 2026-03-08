@@ -1,0 +1,150 @@
+---
+title: "Workflows"
+---
+
+This article describes the end-to-end workflows supported by
+**socialinfrascorepy** and the server-side processing that happens behind
+the scenes.
+
+## User read-only workflow
+
+These queries read data that already exists in the database.
+
+```python
+import os
+import socialinfrascorepy as si
+
+cli = si.client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_ANON_KEY"])
+auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+authed = auth["client"]
+
+# Search by place name
+candidates = si.search_locations(authed, query="Ithaca", state="NY")
+
+# Retrieve boundary
+poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
+
+# Retrieve sites (up to 1 000; larger sets are randomly sampled)
+sites = si.get_sites(authed, location_id="42")
+
+# Retrieve scorecard
+scores = si.get_scorecard(authed, osm_id=5128581)
+```
+
+## User request workflow
+
+When a neighborhood is not yet scored, the user submits a request with a
+valid polygon.  The server then:
+
+1. **Validates** the geometry (must be Polygon or MultiPolygon, CRS 4326,
+   within the area-size limit).
+2. **Uploads** the boundary and creates a `location` entry.
+3. **Logs** the request in `public.requests` with status tracking fields:
+   `grid`, `sites`, `scorecard` (all start `False`), `status`, and
+   `update_time`.
+4. **Generates a population grid** --- extracts the regional population
+   raster, crops to the polygon extent, and converts to 1 sq km cells
+   stored in `public.neighborhood_grid_cache`.
+5. **Ingests sites** --- once the grid is ready (`grid = True`), the server
+   queries Google Places API using the selected themes and
+   `sites_grid_sqkm` cell size.  When complete, `sites` is set to `True`.
+6. **Calculates the scorecard** --- density, diversity, and dispersion
+   metrics are computed, the result row is inserted into
+   `public.scorecard_result`, and `scorecard` is set to `True`.
+7. **Sets final status** to `"success"` with the current timestamp.
+
+```python
+import time
+
+geom = {
+    "type": "Polygon",
+    "coordinates": [[
+        [-122.32, 47.60], [-122.30, 47.60],
+        [-122.30, 47.62], [-122.32, 47.62],
+        [-122.32, 47.60],
+    ]],
+}
+
+result = si.submit_request(
+    client=authed,
+    geometry=geom,
+    theme_ids=[1, 3, 4],
+    sites_grid_sqkm=2,
+)
+
+# Poll until complete
+time.sleep(30)
+status = si.get_request_status(authed, result["request"]["id"])
+```
+
+Processing typically takes a few minutes depending on polygon area and
+theme selection.
+
+## Account management
+
+```python
+# Registration and login
+si.sign_up(cli, "user@example.com", "password", name="User Name")
+auth = si.sign_in(cli, "user@example.com", "password")
+authed = auth["client"]
+
+# Password and account lifecycle
+si.send_password_reset(authed)
+si.delete_account(authed)
+
+# Request history and quotas
+si.get_requests(authed)
+si.get_subscription(authed)
+si.get_usage(authed, start_date="2025-01-01")
+si.get_remaining_queries(authed)
+```
+
+### Subscription tiers
+
+Every user has a subscription tier.  The **free** tier allows a limited
+number of queries per month (currently 100 sq km queries).  The
+**developer** tier (for the core team) has no limit.
+
+Usage is tracked as the product of `area` (polygon sq km) and `n_keywords`
+for each request.
+
+## Implemented client functions
+
+### Authentication
+
+| Function | Description |
+|----------|-------------|
+| `sign_up()` | Register a new user |
+| `sign_in()` | Authenticate and receive session tokens |
+| `send_password_reset()` | Trigger a password-reset email |
+| `delete_account()` | Delete the authenticated account |
+
+### Polygon lookup
+
+| Function | Description |
+|----------|-------------|
+| `search_locations()` | Fuzzy search for candidate locations |
+| `get_boundary_by_osm_id()` | Fetch boundary by OpenStreetMap ID |
+| `get_boundary_by_location_id()` | Fetch boundary by internal ID |
+| `get_boundary_by_area_id()` | Fetch boundary by area UUID |
+| `get_boundary_by_place_name()` | Resolve a single boundary from name |
+
+### Themes, sites, and scorecard
+
+| Function | Description |
+|----------|-------------|
+| `get_themes()` | List social-infrastructure themes |
+| `get_theme_keywords()` | List keywords for selected themes |
+| `get_sites()` | Retrieve sites for a location |
+| `get_scorecard()` | Retrieve scorecard metrics |
+
+### Requests and account
+
+| Function | Description |
+|----------|-------------|
+| `submit_request()` | Submit a scoring request |
+| `get_request_status()` | Check one request's status |
+| `get_requests()` | List request history |
+| `get_subscription()` | Get subscription profile |
+| `get_usage()` | Get usage summary |
+| `get_remaining_queries()` | Get remaining monthly quota |

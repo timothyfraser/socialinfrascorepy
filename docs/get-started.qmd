@@ -1,0 +1,139 @@
+---
+title: "Getting started with socialinfrascorepy"
+---
+
+## Overview
+
+**socialinfrascorepy** lets you use the Social Infrastructure Scorecard from
+Python. If you use the
+[Social Infrastructure Scorecard Dashboard](https://github.com/timothyfraser/scorecard),
+this package gives you programmatic access to the same data: view social
+infrastructure sites (parks, community spaces, places of worship, and more),
+request scorecards for new areas, and download results for analysis.
+
+You need two environment variables: `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+These are provided when you sign up for access.
+
+## Installation
+
+```bash
+pip install git+https://github.com/timothyfraser/scorecard.git#subdirectory=socialinfrascorepy
+```
+
+## Step 1 --- Create a client
+
+The `client()` function builds a lightweight configuration object that every
+other function in the package requires.
+
+```python
+import os
+import socialinfrascorepy as si
+
+cli = si.client(
+    os.environ["SUPABASE_URL"],
+    os.environ["SUPABASE_ANON_KEY"],
+)
+```
+
+## Step 2 --- Authenticate
+
+Most operations require an authenticated session.  Use `sign_up()` once to
+register, then `sign_in()` for subsequent sessions.
+
+```python
+# First time only
+result = si.sign_up(cli, "you@example.com", "strong-password", name="Your Name")
+
+# Subsequent sessions
+auth = si.sign_in(cli, "you@example.com", "strong-password")
+authed = auth["client"]
+```
+
+The returned `authed` client carries your session tokens and is passed to all
+downstream functions.
+
+## Step 3 --- Look up a neighborhood
+
+You can find neighborhoods by OpenStreetMap ID, internal location ID, area ID,
+or free-text place name.
+
+```python
+# By OSM ID
+poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
+
+# By place name search
+candidates = si.search_locations(authed, query="Ithaca", state="NY")
+boundary = si.get_boundary_by_place_name(authed, query="Ithaca", state="NY")
+```
+
+Example output (sample):
+
+```text
+   location_id   osm_id place_name    county state country  area_km2 geom_type
+0        84217  5128581     Ithaca  Tompkins    NY      US     15.41   Polygon
+```
+
+## Step 4 --- Browse themes and keywords
+
+Social infrastructure is organised into themes (e.g. community spaces, parks,
+places of worship).  Browse what is available before submitting a request.
+
+```python
+themes = si.get_themes(authed)
+keywords = si.get_theme_keywords(authed, theme_ids=[1, 3, 4])
+```
+
+## Step 5 --- Submit a scorecard request
+
+Supply a GeoJSON polygon and, optionally, theme selections.  The server
+validates geometry, checks your quota, and starts asynchronous processing.
+
+```python
+import time
+
+geom = {
+    "type": "Polygon",
+    "coordinates": [[
+        [-122.32, 47.60], [-122.30, 47.60],
+        [-122.30, 47.62], [-122.32, 47.62],
+        [-122.32, 47.60],
+    ]],
+}
+
+result = si.submit_request(
+    client=authed,
+    geometry=geom,
+    theme_ids=[1, 3, 4],
+    sites_grid_sqkm=2,
+)
+```
+
+## Step 6 --- Poll for completion and retrieve results
+
+Processing takes a few minutes.  Poll the request status and retrieve the
+scorecard when ready.
+
+```python
+time.sleep(30)
+status = si.get_request_status(authed, result["request"]["id"])
+
+if status["status"].iloc[0] == "success":
+    scores = si.get_scorecard(authed, location_id=result["location_id"])
+    sites = si.get_sites(authed, location_id=result["location_id"])
+```
+
+## Step 7 --- Check your account
+
+```python
+si.get_subscription(authed)
+si.get_usage(authed, start_date="2025-01-01")
+si.get_remaining_queries(authed)
+si.get_requests(authed)
+```
+
+## Next steps
+
+- Read the [Client API](client-api.qmd) article for a complete function
+  reference with parameter details.
+- See [Workflows](workflows.qmd) for an in-depth look at how requests are
+  processed on the backend.
