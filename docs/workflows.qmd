@@ -46,8 +46,8 @@ valid polygon.  The server then:
    raster, crops to the polygon extent, and converts to 1 sq km cells
    stored in `public.neighborhood_grid_cache`.
 5. **Ingests sites** --- once the grid is ready (`grid = True`), the server
-   queries Google Places API using the selected themes and
-   `sites_grid_sqkm` cell size.  When complete, `sites` is set to `True`.
+   loads the area's sites from Overture Maps open data.
+   When complete, `sites` is set to `True`.
 6. **Calculates the scorecard** --- density, diversity, and dispersion
    metrics are computed, the result row is inserted into
    `public.scorecard_result`, and `scorecard` is set to `True`.
@@ -68,8 +68,7 @@ geom = {
 result = si.submit_request(
     client=authed,
     geometry=geom,
-    theme_ids=[1, 3, 4],
-    sites_grid_sqkm=2,
+    name="my-area",
 )
 
 # Poll until complete
@@ -77,8 +76,7 @@ time.sleep(30)
 status = si.get_request_status(authed, result["request"]["id"])
 ```
 
-Processing typically takes a few minutes depending on polygon area and
-theme selection.
+Processing typically takes a few minutes depending on polygon area.
 
 ## Account management
 
@@ -105,8 +103,7 @@ Every user has a subscription tier.  The **free** tier allows a limited
 number of queries per month (currently 100 sq km queries).  The
 **developer** tier (for the core team) has no limit.
 
-Usage is tracked as the product of `area` (polygon sq km) and `n_keywords`
-for each request.
+Usage is tracked as the area (polygon sq km) of each request.
 
 ## Implemented client functions
 
@@ -129,12 +126,10 @@ for each request.
 | `get_boundary_by_area_id()` | Fetch boundary by area UUID |
 | `get_boundary_by_place_name()` | Resolve a single boundary from name |
 
-### Themes, sites, and scorecard
+### Sites and scorecard
 
 | Function | Description |
 |----------|-------------|
-| `get_themes()` | List social-infrastructure themes |
-| `get_theme_keywords()` | List keywords for selected themes |
 | `get_sites()` | Retrieve sites for a location |
 | `get_scorecard()` | Retrieve scorecard metrics |
 

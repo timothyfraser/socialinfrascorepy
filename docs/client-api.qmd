@@ -51,17 +51,6 @@ si.delete_account(client)
 - `delete_account()` calls a server-side RPC that deletes the
   authenticated user.
 
-## Themes and keywords
-
-```python
-si.get_themes(client)
-si.get_theme_keywords(client, theme_ids=None)
-```
-
-- `get_themes()` lists all available social-infrastructure themes.
-- `get_theme_keywords()` returns keywords for selected theme IDs
-  (or all themes when `None`).
-
 ## Polygon lookup
 
 ```python
@@ -94,14 +83,12 @@ si.get_sites(client, location_id, limit=1000)
 si.submit_request(
     client,
     geometry,
-    n_keywords=None,
     name=None,
     display_name=None,
     place_name=None,
     country="US",
     state=None,
     theme_ids=None,
-    sites_grid_sqkm=2,
 )
 
 si.get_request_status(client, request_id)
@@ -113,9 +100,10 @@ si.get_requests(client, limit=100, offset=0)
 - **`geometry`** --- GeoJSON geometry dict or JSON string (Polygon /
   MultiPolygon, CRS 4326).
 - **`theme_ids`** --- list of int or CSV string (e.g. `[1, 3, 4]` or
-  `"1,3,4"`).  Selects keyword groups for site ingestion.
-- **`sites_grid_sqkm`** --- cell size for the ephemeral query grid used
-  during Google Places ingestion (default 2 sq km).
+  `"1,3,4"`).
+- Sites come from Overture Maps open data.  The retired options
+  `sites_grid_sqkm` and `n_keywords` are still accepted but ignored (with a
+  warning).
 
 ## Account and usage
 

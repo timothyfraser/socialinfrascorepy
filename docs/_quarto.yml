@@ -70,12 +70,6 @@ quartodoc:
         - get_boundary_by_area_id
         - get_boundary_by_place_name
 
-    - title: Themes and Keywords
-      desc: Browse available social-infrastructure themes and keywords.
-      contents:
-        - get_themes
-        - get_theme_keywords
-
     - title: Scorecard and Sites
       desc: Retrieve scorecard results and social-infrastructure sites.
       contents:

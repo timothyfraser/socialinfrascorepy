@@ -73,19 +73,9 @@ Example output (sample):
 0        84217  5128581     Ithaca  Tompkins    NY      US     15.41   Polygon
 ```
 
-## Step 4 --- Browse themes and keywords
+## Step 4 --- Submit a scorecard request
 
-Social infrastructure is organised into themes (e.g. community spaces, parks,
-places of worship).  Browse what is available before submitting a request.
-
-```python
-themes = si.get_themes(authed)
-keywords = si.get_theme_keywords(authed, theme_ids=[1, 3, 4])
-```
-
-## Step 5 --- Submit a scorecard request
-
-Supply a GeoJSON polygon and, optionally, theme selections.  The server
+Supply a GeoJSON polygon.  The server
 validates geometry, checks your quota, and starts asynchronous processing.
 
 ```python
@@ -103,12 +93,11 @@ geom = {
 result = si.submit_request(
     client=authed,
     geometry=geom,
-    theme_ids=[1, 3, 4],
-    sites_grid_sqkm=2,
+    name="my-area",
 )
 ```
 
-## Step 6 --- Poll for completion and retrieve results
+## Step 5 --- Poll for completion and retrieve results
 
 Processing takes a few minutes.  Poll the request status and retrieve the
 scorecard when ready.
@@ -122,7 +111,7 @@ if status["status"].iloc[0] == "success":
     sites = si.get_sites(authed, location_id=result["location_id"])
 ```
 
-## Step 7 --- Check your account
+## Step 6 --- Check your account
 
 ```python
 si.get_subscription(authed)

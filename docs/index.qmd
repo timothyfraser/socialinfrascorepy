@@ -46,7 +46,6 @@ See the [Getting Started](get-started.qmd) guide for a complete walkthrough.
 |------|-----------|
 | **Auth** | `sign_up()`, `sign_in()`, `send_password_reset()`, `delete_account()` |
 | **Boundaries** | `search_locations()`, `get_boundary_by_osm_id()`, `get_boundary_by_place_name()`, ... |
-| **Themes** | `get_themes()`, `get_theme_keywords()` |
 | **Requests** | `submit_request()`, `get_request_status()`, `get_requests()` |
 | **Scorecard** | `get_scorecard()`, `get_sites()` |
 | **Account** | `get_subscription()`, `get_usage()`, `get_remaining_queries()` |

@@ -24,13 +24,24 @@ Documentation: <https://connect.systems-apps.com/py/> (intended public name:
 ## Installation
 
 ```bash
-pip install git+https://github.com/timothyfraser/scorecard.git#subdirectory=socialinfrascorepy
+pip install git+https://github.com/timothyfraser/socialinfrascorepy.git
 ```
 
 For optional geometry support:
 
 ```bash
-pip install "socialinfrascorepy[geo] @ git+https://github.com/timothyfraser/scorecard.git#subdirectory=socialinfrascorepy"
+pip install "socialinfrascorepy[geo] @ git+https://github.com/timothyfraser/socialinfrascorepy.git"
+```
+
+### In the browser (Pyodide)
+
+The package runs in Pyodide (for example in a web page or JupyterLite).
+Install `pyodide-http` first so `requests` can reach Supabase through the
+browser; the package patches `requests` automatically on import:
+
+```python
+import micropip
+await micropip.install(["pyodide-http", "socialinfrascorepy"])
 ```
 
 ## Quick start
@@ -82,7 +93,6 @@ Expected output (sample):
 |------|-----------|
 | **Auth** | `sign_up()`, `sign_in()`, `send_password_reset()`, `delete_account()` |
 | **Boundaries** | `search_locations()`, `get_boundary_by_osm_id()`, `get_boundary_by_place_name()`, ... |
-| **Themes** | `get_themes()`, `get_theme_keywords()` |
 | **Requests** | `submit_request()`, `get_request_status()`, `get_requests()` |
 | **Scorecard** | `get_scorecard()`, `get_sites()` |
 | **Account** | `get_subscription()`, `get_usage()`, `get_remaining_queries()` |
