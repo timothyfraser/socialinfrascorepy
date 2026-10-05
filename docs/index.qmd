@@ -12,7 +12,7 @@ places of worship, and more), request scorecards for new areas, and download
 results for analysis.
 
 > Looking for R?  See the companion package,
-> **[socialinfrascorer](https://timothyfraser.github.io/scorecard/socialinfrascorer/)**.
+> **[socialinfrascorer](https://connect.systems-apps.com/r/)**.
 
 ## Installation
 

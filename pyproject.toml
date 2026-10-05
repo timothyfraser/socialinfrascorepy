@@ -31,9 +31,9 @@ docs = ["quartodoc"]
 dev = ["pytest", "quartodoc"]
 
 [project.urls]
-Homepage = "https://timothyfraser.github.io/scorecard/socialinfrascorepy/"
-Repository = "https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorepy"
-Issues = "https://github.com/timothyfraser/scorecard/issues"
+Homepage = "https://connect.systems-apps.com/py/"
+Repository = "https://github.com/timothyfraser/socialinfrascorepy"
+Issues = "https://github.com/timothyfraser/socialinfrascorepy/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/socialinfrascorepy"]
