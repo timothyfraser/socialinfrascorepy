@@ -100,7 +100,7 @@ def sign_in(
 
     Examples
     --------
-    >>> auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+    >>> auth = si.sign_in(cli, "you@example.com", "your-password")
     >>> authed = auth["client"]
     """
     data = perform(

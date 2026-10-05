@@ -23,15 +23,11 @@ pip install git+https://github.com/timothyfraser/scorecard.git#subdirectory=soci
 ## Quick start
 
 ```python
-import os
 import socialinfrascorepy as si
 
-cli = si.client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_ANON_KEY"],
-)
+cli = si.client()
 
-auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+auth = si.sign_in(cli, "you@example.com", "your-password")
 authed = auth["client"]
 
 poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
@@ -50,12 +46,11 @@ See the [Getting Started](get-started.qmd) guide for a complete walkthrough.
 | **Scorecard** | `get_scorecard()`, `get_sites()` |
 | **Account** | `get_subscription()`, `get_usage()`, `get_remaining_queries()` |
 
-## Environment variables
+## Connection
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `SUPABASE_URL` | Always | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+`client()` connects to the scorecard's public Supabase project with no setup:
+the URL and publishable (anon) key are built in. For testing or self-hosting,
+set `SI_SUPABASE_URL` and `SI_SUPABASE_ANON_KEY`, or pass the arguments.
 
 ## Methodology
 

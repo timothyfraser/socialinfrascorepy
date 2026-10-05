@@ -2,10 +2,31 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import Optional
 
 from socialinfrascorepy._utils import SIScorecardError
+
+
+# Public by design: the URL and the publishable (anon) key are already shipped
+# in the scorecard web bundle, and row level security protects the data. The
+# SI_SUPABASE_* environment variables only override them (testing, self-hosting).
+PUBLIC_SUPABASE_URL = "https://annuvayiqynyksnzkpoy.supabase.co"
+PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_SS0DtvFh990Zcj-6q7t4nw_VRdCF_Vb"
+
+
+def _default_url() -> str:
+    """Return ``SI_SUPABASE_URL`` if set and non-empty, else the public URL."""
+    return os.environ.get("SI_SUPABASE_URL", "").strip() or PUBLIC_SUPABASE_URL
+
+
+def _default_key() -> str:
+    """Return ``SI_SUPABASE_ANON_KEY`` if set and non-empty, else the public key."""
+    return (
+        os.environ.get("SI_SUPABASE_ANON_KEY", "").strip()
+        or PUBLIC_SUPABASE_ANON_KEY
+    )
 
 
 @dataclass(frozen=True)
@@ -31,19 +52,32 @@ class SIClient:
 
 
 def client(
-    supabase_url: str,
-    anon_key: str,
+    supabase_url: Optional[str] = None,
+    anon_key: Optional[str] = None,
     access_token: Optional[str] = None,
     refresh_token: Optional[str] = None,
 ) -> SIClient:
     """Create a socialinfrascorepy API client.
 
+    Call ``client()`` with no arguments: it connects to the Social
+    Infrastructure Scorecard's public Supabase project. The URL and the
+    publishable (anon) key are public by design and built in, so you do not set
+    any environment variables. Row level security protects the data; you still
+    need ``sign_in()`` for anything that is not public.
+
+    For testing or self-hosting, point the package elsewhere with the
+    environment variables ``SI_SUPABASE_URL`` and ``SI_SUPABASE_ANON_KEY``, or
+    pass the arguments directly.
+
     Parameters
     ----------
-    supabase_url : str
-        Supabase project URL (e.g. ``https://project.supabase.co``).
-    anon_key : str
-        Supabase anon / publishable API key.
+    supabase_url : str, optional
+        Supabase project URL (e.g. ``https://project.supabase.co``). Defaults
+        to ``SI_SUPABASE_URL`` if set, otherwise the scorecard's public project.
+    anon_key : str, optional
+        Supabase anon / publishable API key. Defaults to ``SI_SUPABASE_ANON_KEY``
+        if set, otherwise the scorecard's public key. Never pass a service-role
+        or secret key.
     access_token : str, optional
         Authenticated access token.
     refresh_token : str, optional
@@ -57,16 +91,17 @@ def client(
     Raises
     ------
     SIScorecardError
-        If *supabase_url* or *anon_key* is empty.
+        If *supabase_url* or *anon_key* is passed explicitly but is empty.
 
     Examples
     --------
-    >>> import os, socialinfrascorepy as si
-    >>> cli = si.client(
-    ...     os.environ["SUPABASE_URL"],
-    ...     os.environ["SUPABASE_ANON_KEY"],
-    ... )
+    >>> import socialinfrascorepy as si
+    >>> cli = si.client()
     """
+    if supabase_url is None:
+        supabase_url = _default_url()
+    if anon_key is None:
+        anon_key = _default_key()
     if not isinstance(supabase_url, str) or not supabase_url.strip():
         raise SIScorecardError("`supabase_url` must be a non-empty string.")
     if not isinstance(anon_key, str) or not anon_key.strip():

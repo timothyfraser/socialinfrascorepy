@@ -11,8 +11,8 @@ this package gives you programmatic access to the same data: view social
 infrastructure sites (parks, community spaces, places of worship, and more),
 request scorecards for new areas, and download results for analysis.
 
-You need two environment variables: `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
-These are provided when you sign up for access.
+There is nothing to configure: the package connects to the scorecard's public
+Supabase project by default, and you sign in with your own account.
 
 ## Installation
 
@@ -26,13 +26,9 @@ The `client()` function builds a lightweight configuration object that every
 other function in the package requires.
 
 ```python
-import os
 import socialinfrascorepy as si
 
-cli = si.client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_ANON_KEY"],
-)
+cli = si.client()
 ```
 
 ## Step 2 --- Authenticate

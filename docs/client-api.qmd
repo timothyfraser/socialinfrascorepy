@@ -6,28 +6,24 @@ This article documents every user-facing function in **socialinfrascorepy**,
 grouped by capability area.  All functions communicate through Supabase Auth
 and PostgREST.  No private API URL is required.
 
-## Environment requirements
+## Connection
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `SUPABASE_URL` | Always | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+`client()` needs no configuration: the scorecard's public Supabase URL and
+publishable (anon) key are built in. Both are public by design, and row level
+security protects the data. Never use a service-role or secret key client-side.
 
-**Credentials and safety:** The `SUPABASE_URL` is public.  Use only the anon
-(publishable) key client-side; never expose a service-role or secret key.
+For testing or self-hosting, set `SI_SUPABASE_URL` and `SI_SUPABASE_ANON_KEY`,
+or pass `supabase_url` and `anon_key` directly.
 
 ## Client setup
 
 ```python
-import os
 import socialinfrascorepy as si
 
-cli = si.client(
-    supabase_url=os.environ["SUPABASE_URL"],
-    anon_key=os.environ["SUPABASE_ANON_KEY"],
-    access_token=None,
-    refresh_token=None,
-)
+cli = si.client()
+
+# Optional overrides (testing, self-hosting):
+# si.client(supabase_url="https://example.supabase.co", anon_key="...")
 ```
 
 `client()` returns a lightweight `SIClient` dataclass that stores connection

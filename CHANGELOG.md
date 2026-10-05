@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- `client()` now works with no arguments: the scorecard's public Supabase URL
+  and publishable (anon) key are built in, so you no longer set `SUPABASE_URL`
+  or `SUPABASE_ANON_KEY`. The quick start is `cli = si.client()` then
+  `si.sign_in(cli, email, password)`. For testing or self-hosting, override the
+  defaults with the `SI_SUPABASE_URL` and `SI_SUPABASE_ANON_KEY` environment
+  variables or with the arguments. Existing positional calls keep working.
+
 ## 0.2.0
 
 - All HTTP now goes through one internal function, `socialinfrascorepy._http.perform()`.

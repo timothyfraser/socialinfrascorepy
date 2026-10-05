@@ -11,11 +11,10 @@ the scenes.
 These queries read data that already exists in the database.
 
 ```python
-import os
 import socialinfrascorepy as si
 
-cli = si.client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_ANON_KEY"])
-auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+cli = si.client()
+auth = si.sign_in(cli, "you@example.com", "your-password")
 authed = auth["client"]
 
 # Search by place name

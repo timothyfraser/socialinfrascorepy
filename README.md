@@ -47,17 +47,13 @@ await micropip.install(["pyodide-http", "socialinfrascorepy"])
 ## Quick start
 
 ```python
-import os
 import socialinfrascorepy as si
 
-# 1. Create a client
-cli = si.client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_ANON_KEY"],
-)
+# 1. Create a client (no keys or environment variables needed)
+cli = si.client()
 
 # 2. Sign in
-auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
+auth = si.sign_in(cli, "you@example.com", "your-password")
 authed = auth["client"]
 
 # 3. Look up a neighborhood boundary
@@ -99,15 +95,16 @@ Expected output (sample):
 
 ---
 
-## Environment variables
+## Connection
 
-To use the package and query the database, you need two environment variables.
-Get your keys from the Social Infrastructure Dashboard!
+`client()` connects to the scorecard's public Supabase project out of the box.
+The project URL and the publishable (anon) key are public by design and built
+in, so there is nothing to configure. Row level security protects the data, and
+you sign in with your own account for anything that is not public.
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `SUPABASE_URL` | Always | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+For testing or self-hosting, override the defaults with the environment
+variables `SI_SUPABASE_URL` and `SI_SUPABASE_ANON_KEY`, or pass
+`supabase_url` and `anon_key` to `client()`.
 
 ---
 
