@@ -5,14 +5,9 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, Optional
 
-import requests as _requests
-
 from socialinfrascorepy._client import SIClient, _require_auth, _with_session
-from socialinfrascorepy._utils import (
-    SIScorecardError,
-    _add_common_headers,
-    _parse_response,
-)
+from socialinfrascorepy._http import perform
+from socialinfrascorepy._utils import SIScorecardError
 
 
 def sign_up(
@@ -54,12 +49,11 @@ def sign_up(
     if name and str(name).strip():
         payload["options"] = {"data": {"display_name": str(name)}}
 
-    resp = _requests.post(
-        f"{client.supabase_url}/auth/v1/signup",
-        headers=_add_common_headers(client, use_auth=False),
+    data = perform(
+        client,
+        "/auth/v1/signup",
         json=payload,
     )
-    data = _parse_response(resp)
 
     session = data.get("session") or {}
     user = data.get("user")
@@ -109,12 +103,12 @@ def sign_in(
     >>> auth = si.sign_in(cli, os.environ["EMAIL"], os.environ["PASSWORD"])
     >>> authed = auth["client"]
     """
-    resp = _requests.post(
-        f"{client.supabase_url}/auth/v1/token?grant_type=password",
-        headers=_add_common_headers(client, use_auth=False),
+    data = perform(
+        client,
+        "/auth/v1/token",
         json={"email": str(email), "password": str(password)},
+        params={"grant_type": "password"},
     )
-    data = _parse_response(resp)
 
     new_client = _with_session(
         client,
@@ -156,11 +150,7 @@ def send_password_reset(client: SIClient) -> Dict[str, Any]:
     """
     _require_auth(client)
 
-    user_resp = _requests.get(
-        f"{client.supabase_url}/auth/v1/user",
-        headers=_add_common_headers(client, use_auth=True),
-    )
-    user = _parse_response(user_resp)
+    user = perform(client, "/auth/v1/user", method="GET", auth=True)
 
     email = user.get("email") if isinstance(user, dict) else None
     if not email or not isinstance(email, str) or not email.strip():
@@ -168,12 +158,12 @@ def send_password_reset(client: SIClient) -> Dict[str, Any]:
             "Could not resolve authenticated user email for password reset."
         )
 
-    resp = _requests.post(
-        f"{client.supabase_url}/auth/v1/recover",
-        headers=_add_common_headers(client, use_auth=False),
+    data = perform(
+        client,
+        "/auth/v1/recover",
         json={"email": email.strip()},
     )
-    return _parse_response(resp)
+    return data
 
 
 def delete_account(client: SIClient) -> Dict[str, Any]:
@@ -195,12 +185,12 @@ def delete_account(client: SIClient) -> Dict[str, Any]:
     """
     _require_auth(client)
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_delete_account",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_delete_account",
         json={},
+        auth=True,
     )
-    data = _parse_response(resp)
 
     if isinstance(data, str):
         data = json.loads(data)

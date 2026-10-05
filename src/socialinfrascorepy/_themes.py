@@ -1,60 +1,46 @@
-"""Theme and keyword lookup functions."""
+"""Theme and keyword lookup (internal).
+
+The keyword-theme lookups date from the original keyword-search ingestion
+pipeline.  Sites now come from Overture Maps open data, so these are internal
+helpers.  The old public names remain for one release as deprecated aliases.
+"""
 
 from __future__ import annotations
 
-from typing import List, Optional, Sequence, Union
+import warnings
+from typing import Optional, Sequence, Union
 
 import pandas as pd
-import requests as _requests
 
 from socialinfrascorepy._client import SIClient
-from socialinfrascorepy._utils import (
-    SIScorecardError,
-    _add_common_headers,
-    _as_dataframe,
-    _parse_response,
-)
+from socialinfrascorepy._http import perform
+from socialinfrascorepy._utils import SIScorecardError, _as_dataframe
 
 
-def get_themes(client: SIClient) -> pd.DataFrame:
-    """List available social-infrastructure themes.
+def _get_themes(client: SIClient) -> pd.DataFrame:
+    """List available social-infrastructure themes (internal).
 
     Authentication is optional; the endpoint is public.
-
-    Parameters
-    ----------
-    client : SIClient
-        A client from :func:`~socialinfrascorepy.client`.
 
     Returns
     -------
     pandas.DataFrame
-        A DataFrame with columns ``theme`` (int) and ``type`` (str).
-
-    Examples
-    --------
-    >>> themes = si.get_themes(cli)
+        Columns ``theme`` (int) and ``type`` (str).
     """
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_themes",
-        headers=_add_common_headers(client, use_auth=False),
-        json={},
-    )
-    return _as_dataframe(_parse_response(resp))
+    data = perform(client, "/rest/v1/rpc/fn_get_themes", json={})
+    return _as_dataframe(data)
 
 
-def get_theme_keywords(
+def _get_theme_keywords(
     client: SIClient,
     theme_ids: Optional[Union[Sequence[int], str]] = None,
 ) -> pd.DataFrame:
-    """List keywords for given theme IDs.
+    """List keywords for given theme IDs (internal).
 
     Authentication is optional; the endpoint is public.
 
     Parameters
     ----------
-    client : SIClient
-        A client from :func:`~socialinfrascorepy.client`.
     theme_ids : list of int, str, or None
         Integer sequence or comma-separated string of theme IDs.
         Pass ``None`` to retrieve all keywords.
@@ -62,11 +48,7 @@ def get_theme_keywords(
     Returns
     -------
     pandas.DataFrame
-        A DataFrame with columns ``theme``, ``type``, and ``term``.
-
-    Examples
-    --------
-    >>> kw = si.get_theme_keywords(cli, theme_ids=[1, 3, 4])
+        Columns ``theme``, ``type``, and ``term``.
     """
     theme_ids_csv: Optional[str] = None
     if theme_ids is not None:
@@ -79,9 +61,44 @@ def get_theme_keywords(
                 "`theme_ids` must be a list of ints or a comma-separated string."
             )
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_theme_keywords",
-        headers=_add_common_headers(client, use_auth=False),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_get_theme_keywords",
         json={"p_theme_ids": theme_ids_csv},
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
+
+
+def get_themes(client: SIClient) -> pd.DataFrame:
+    """Deprecated alias of an internal helper.
+
+    .. deprecated:: 0.2.0
+        ``get_themes()`` is no longer part of the public API and will be
+        removed in the next release.
+    """
+    warnings.warn(
+        "`get_themes()` is deprecated and will be removed in the next "
+        "release; it is no longer part of the public API.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _get_themes(client)
+
+
+def get_theme_keywords(
+    client: SIClient,
+    theme_ids: Optional[Union[Sequence[int], str]] = None,
+) -> pd.DataFrame:
+    """Deprecated alias of an internal helper.
+
+    .. deprecated:: 0.2.0
+        ``get_theme_keywords()`` is no longer part of the public API and will
+        be removed in the next release.
+    """
+    warnings.warn(
+        "`get_theme_keywords()` is deprecated and will be removed in the "
+        "next release; it is no longer part of the public API.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _get_theme_keywords(client, theme_ids)

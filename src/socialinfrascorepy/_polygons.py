@@ -6,15 +6,13 @@ import re
 from typing import Optional
 
 import pandas as pd
-import requests as _requests
 
 from socialinfrascorepy._client import SIClient, _require_auth
+from socialinfrascorepy._http import perform
 from socialinfrascorepy._utils import (
     SIScorecardError,
-    _add_common_headers,
     _as_dataframe,
     _clamp_limit,
-    _parse_response,
 )
 
 _UUID_RE = re.compile(
@@ -41,16 +39,18 @@ def _si_get_polygon_by_osm_id(client: SIClient, osm_id: int) -> pd.DataFrame:
     except (TypeError, ValueError):
         raise SIScorecardError("`osm_id` must be numeric.")
 
-    resp = _requests.get(
-        f"{client.supabase_url}/rest/v1/bounds",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/bounds",
+        method="GET",
         params={
             "select": "id,name,display_name,osm_id,geometry",
             "osm_id": f"eq.{osm_id_num}",
             "limit": 1,
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def _si_get_polygon_by_location_id(
@@ -61,12 +61,13 @@ def _si_get_polygon_by_location_id(
     if not isinstance(location_id, str) or not location_id.strip():
         raise SIScorecardError("`location_id` must be a non-empty string.")
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_bounds_by_location_id",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_bounds_by_location_id",
         json={"p_location_id": location_id.strip()},
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def _si_get_polygon_by_area_id(client: SIClient, area_id: str) -> pd.DataFrame:
@@ -78,12 +79,13 @@ def _si_get_polygon_by_area_id(client: SIClient, area_id: str) -> pd.DataFrame:
     if not _UUID_RE.match(area_id):
         raise SIScorecardError("`area_id` must be a valid UUID string.")
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_bounds_by_area_id",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_bounds_by_area_id",
         json={"p_area_id": area_id},
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def _si_get_polygon_lookup_by_place_name(
@@ -99,17 +101,18 @@ def _si_get_polygon_lookup_by_place_name(
     if not place_name:
         raise SIScorecardError("`place_name` must be a non-empty string.")
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_location_lookup_by_place_name",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_location_lookup_by_place_name",
         json={
             "p_place_name": place_name,
             "p_country": _normalize_opt_text(country),
             "p_state": _normalize_opt_text(state),
             "p_limit": _clamp_limit(limit, max_limit=5),
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def _si_get_polygon_by_place_name(
@@ -124,16 +127,17 @@ def _si_get_polygon_by_place_name(
     if not place_name:
         raise SIScorecardError("`place_name` must be a non-empty string.")
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_bounds_by_place_name",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_bounds_by_place_name",
         json={
             "p_place_name": place_name,
             "p_country": _normalize_opt_text(country),
             "p_state": _normalize_opt_text(state),
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 # -- public wrappers (match R package names) ---------------------------------

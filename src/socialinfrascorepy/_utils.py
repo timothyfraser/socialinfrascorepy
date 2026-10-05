@@ -5,11 +5,20 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 import pandas as pd
-import requests as _requests
 
 
 class SIScorecardError(Exception):
-    """Raised when a Supabase API call returns an error."""
+    """Raised when a Supabase API call returns an error.
+
+    Attributes
+    ----------
+    status_code : int or None
+        HTTP status code of the failing response, when there was one.
+    """
+
+    def __init__(self, message: str = "", status_code: Optional[int] = None):
+        super().__init__(message)
+        self.status_code = status_code
 
 
 def _clamp_limit(limit: Any, max_limit: int = 1000) -> int:
@@ -55,7 +64,7 @@ def _add_common_headers(
     return headers
 
 
-def _parse_response(resp: _requests.Response) -> Any:
+def _parse_response(resp: Any) -> Any:
     """Decode a Supabase response, raising on HTTP errors.
 
     Parameters
@@ -78,13 +87,18 @@ def _parse_response(resp: _requests.Response) -> Any:
             body = resp.json()
         except ValueError:
             body = {}
+        if not isinstance(body, dict):
+            body = {}
+        # PostgREST uses "message"; GoTrue uses "msg" / "error_description".
         msg = (
             body.get("message")
+            or body.get("msg")
+            or body.get("error_description")
             or body.get("error")
             or resp.text
             or f"HTTP {resp.status_code}"
         )
-        raise SIScorecardError(msg)
+        raise SIScorecardError(str(msg), status_code=resp.status_code)
 
     if not resp.text:
         return []

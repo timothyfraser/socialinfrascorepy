@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import pandas as pd
-import requests as _requests
 
 from socialinfrascorepy._client import SIClient, _require_auth
+from socialinfrascorepy._http import perform
 from socialinfrascorepy._utils import (
     SIScorecardError,
-    _add_common_headers,
     _as_dataframe,
     _clamp_limit,
-    _parse_response,
 )
 
 
@@ -50,12 +48,13 @@ def get_sites(
 
     limit = _clamp_limit(limit, max_limit=1000)
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_sites_by_location_id",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_get_sites_by_location_id",
         json={
             "p_location_id": location_id.strip(),
             "p_limit": limit,
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)

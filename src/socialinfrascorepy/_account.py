@@ -5,14 +5,12 @@ from __future__ import annotations
 from typing import Optional
 
 import pandas as pd
-import requests as _requests
 
 from socialinfrascorepy._client import SIClient, _require_auth
+from socialinfrascorepy._http import perform
 from socialinfrascorepy._utils import (
     SIScorecardError,
-    _add_common_headers,
     _as_dataframe,
-    _parse_response,
 )
 
 
@@ -37,15 +35,17 @@ def get_subscription(client: SIClient) -> pd.DataFrame:
     """
     _require_auth(client)
 
-    resp = _requests.get(
-        f"{client.supabase_url}/rest/v1/profiles",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/profiles",
+        method="GET",
         params={
             "select": "id,display_name,role,subscription_tier,created_at,updated_at",
             "limit": 1,
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def get_usage(
@@ -87,12 +87,13 @@ def get_usage(
         else None
     )
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_user_usage",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_get_user_usage",
         json={"p_start_date": start_val, "p_end_date": end_val},
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def get_remaining_queries(client: SIClient) -> pd.DataFrame:
@@ -115,9 +116,10 @@ def get_remaining_queries(client: SIClient) -> pd.DataFrame:
     """
     _require_auth(client)
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_user_remaining_queries",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_get_user_remaining_queries",
         json={},
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)

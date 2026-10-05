@@ -3,38 +3,39 @@
 from __future__ import annotations
 
 import json
+import warnings
 from typing import Any, Dict, Optional, Sequence, Union
 
 import pandas as pd
-import requests as _requests
 
 from socialinfrascorepy._client import SIClient, _require_auth
+from socialinfrascorepy._http import perform
 from socialinfrascorepy._utils import (
     SIScorecardError,
-    _add_common_headers,
     _as_dataframe,
     _clamp_limit,
-    _parse_response,
 )
+
+_RETIRED_SUBMIT_ARGS = frozenset({"sites_grid_sqkm", "n_keywords"})
 
 
 def submit_request(
     client: SIClient,
     geometry: Any,
-    n_keywords: Optional[int] = None,
     name: Optional[str] = None,
     display_name: Optional[str] = None,
     place_name: Optional[str] = None,
     country: str = "US",
     state: Optional[str] = None,
     theme_ids: Optional[Union[Sequence[int], str]] = None,
-    sites_grid_sqkm: float = 2,
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """Submit a scorecard request for a new area.
 
     Validates geometry, checks quota, inserts bounds + location + request
     row, and triggers asynchronous processing -- all server-side via
-    ``fn_submit_request`` in PostgreSQL.
+    ``fn_submit_request`` in PostgreSQL.  Sites are drawn from Overture Maps
+    open data.
 
     Parameters
     ----------
@@ -44,10 +45,6 @@ def submit_request(
     geometry : dict or str
         GeoJSON geometry (Polygon or MultiPolygon, CRS 4326) as a Python
         dictionary or a JSON string.
-    n_keywords : int, optional
-        Number of ingestion keywords.  When ``None`` and *theme_ids* is
-        provided, the server derives the count from matching theme
-        keywords.
     name : str, optional
         Short identifier for the polygon.
     display_name : str, optional
@@ -59,10 +56,11 @@ def submit_request(
     state : str, optional
         State / region metadata.
     theme_ids : list of int, str, or None
-        Integer sequence or comma-separated string of theme IDs for
-        keyword selection.
-    sites_grid_sqkm : float, default 2
-        Query-grid cell size in sq km for Google Places ingestion.
+        Integer sequence or comma-separated string of theme IDs.
+    **kwargs
+        Accepted for backward compatibility.  The retired options
+        ``sites_grid_sqkm`` and ``n_keywords`` are ignored with a warning;
+        any other keyword is an error.
 
     Returns
     -------
@@ -80,11 +78,25 @@ def submit_request(
     ...         [-122.32, 47.60],
     ...     ]],
     ... }
-    >>> result = si.submit_request(
-    ...     authed, geometry=geom, theme_ids=[1, 3, 4],
-    ... )
+    >>> result = si.submit_request(authed, geometry=geom, name="my-area")
     """
     _require_auth(client)
+
+    ignored = [k for k in kwargs if k in _RETIRED_SUBMIT_ARGS]
+    unknown = [k for k in kwargs if k not in _RETIRED_SUBMIT_ARGS]
+    if unknown:
+        raise TypeError(
+            "submit_request() got an unexpected keyword argument "
+            f"{unknown[0]!r}"
+        )
+    if ignored:
+        warnings.warn(
+            f"submit_request(): {', '.join(sorted(ignored))} "
+            f"{'is' if len(ignored) == 1 else 'are'} no longer used and "
+            "will be ignored.",
+            UserWarning,
+            stacklevel=2,
+        )
 
     if isinstance(geometry, str):
         geometry_obj = json.loads(geometry)
@@ -114,16 +126,14 @@ def submit_request(
         "p_state": str(state).strip() if state else None,
         "p_place_name": str(place_name).strip() if place_name else None,
         "p_theme_ids": theme_ids_csv,
-        "p_n_keywords": int(n_keywords) if n_keywords is not None else None,
-        "p_sites_grid_sqkm": float(sites_grid_sqkm),
     }
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_submit_request",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_submit_request",
         json=payload,
+        auth=True,
     )
-    data = _parse_response(resp)
 
     if isinstance(data, str):
         data = json.loads(data)
@@ -161,16 +171,18 @@ def get_request_status(
     if not isinstance(request_id, str) or not request_id.strip():
         raise SIScorecardError("`request_id` must be a non-empty UUID string.")
 
-    resp = _requests.get(
-        f"{client.supabase_url}/rest/v1/requests",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/requests",
+        method="GET",
         params={
             "id": f"eq.{request_id.strip()}",
             "select": "*",
             "limit": 1,
         },
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
 
 
 def get_requests(
@@ -206,9 +218,10 @@ def get_requests(
     if offset < 0:
         raise SIScorecardError("`offset` must be a non-negative integer.")
 
-    resp = _requests.post(
-        f"{client.supabase_url}/rest/v1/rpc/fn_get_user_requests",
-        headers=_add_common_headers(client, use_auth=True),
+    data = perform(
+        client,
+        "/rest/v1/rpc/fn_get_user_requests",
         json={"p_limit": limit, "p_offset": offset},
+        auth=True,
     )
-    return _as_dataframe(_parse_response(resp))
+    return _as_dataframe(data)
