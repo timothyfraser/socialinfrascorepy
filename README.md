@@ -14,10 +14,9 @@ View social infrastructure sites (parks, community spaces, places of worship, an
 request scorecards for new areas, and download results for analysis.
 
 > Looking for R? See the companion package,
-> **[`socialinfrascorer`](https://connect.systems-apps.com/r/)**.
+> **[`socialinfrascorer`](https://socialinfrastructure.info/#/packages/r)**.
 
-Documentation: <https://connect.systems-apps.com/py/> (intended public name:
-`socialinfrastructure.info/py/`, pending the custom domain).
+Documentation: <https://socialinfrastructure.info/#/packages/py>.
 
 ----
 
@@ -63,7 +62,7 @@ poly = si.get_boundary_by_osm_id(authed, osm_id=5128581)
 scores = si.get_scorecard(authed, osm_id=5128581)
 ```
 
-See the [Getting Started](https://connect.systems-apps.com/py/get-started.html)
+See the [Getting Started](https://socialinfrastructure.info/#/packages/py)
 guide for a detailed walkthrough.
 
 ## Example query and output

@@ -4,8 +4,7 @@ project:
 
 website:
   title: "socialinfrascorepy"
-  # Served from Posit Connect; intended public name socialinfrastructure.info/py/ (pending custom domain).
-  site-url: https://connect.systems-apps.com/py/
+  site-url: https://socialinfrastructure.info/py/
   description: >
     Python client for the Social Infrastructure Scorecard. Authenticate,
     look up neighborhoods, submit scoring requests, and retrieve results

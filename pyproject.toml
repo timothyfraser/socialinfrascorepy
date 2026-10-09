@@ -31,7 +31,7 @@ docs = ["quartodoc"]
 dev = ["pytest", "quartodoc"]
 
 [project.urls]
-Homepage = "https://connect.systems-apps.com/py/"
+Homepage = "https://socialinfrastructure.info/"
 Repository = "https://github.com/timothyfraser/socialinfrascorepy"
 Issues = "https://github.com/timothyfraser/socialinfrascorepy/issues"
 
