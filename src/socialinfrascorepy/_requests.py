@@ -32,8 +32,8 @@ def submit_request(
 ) -> Dict[str, Any]:
     """Submit a scorecard request for a new area.
 
-    Validates geometry, checks quota, inserts bounds + location + request
-    row, and triggers asynchronous processing -- all server-side via
+    Validates geometry, checks fair-use limits, inserts bounds + location +
+    request row, and triggers asynchronous processing -- all server-side via
     ``fn_submit_request`` in PostgreSQL.
 
     Parameters

@@ -127,5 +127,9 @@ si.get_remaining_queries(client)
 
 - `get_subscription()` returns the user's profile including tier.
 - `get_usage()` summarises request and query counts in a date range.
-- `get_remaining_queries()` returns the remaining monthly quota for the
-  authenticated user.
+- `get_remaining_queries()` returns a one-row DataFrame with your
+  fair-use limits, current hourly and daily usage, requests left
+  (`remaining_today`, `remaining_this_hour`), and when each window
+  resets (`hour_resets_at`, `day_resets_at`).  Free-tier limits are 200
+  requests per day, 30 per hour, 50,000 km² per day, 15,000 km² per
+  hour, and 3 running at once.  Unlimited values are missing (`NaN`).

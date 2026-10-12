@@ -31,6 +31,16 @@ def test_public_api_symbols_present():
     assert set(si.__all__) == expected
 
 
+def test_removed_symbols_absent():
+    # Accounts are free; there are no subscription tiers to change.
+    assert "change_subscription" not in si.__all__
+    assert not hasattr(si, "change_subscription")
+
+
+def test_version_is_0_2_0():
+    assert si.__version__ == "0.2.0"
+
+
 def test_function_signatures_match_contract():
     expected = {
         "client": ["supabase_url", "anon_key", "access_token", "refresh_token"],

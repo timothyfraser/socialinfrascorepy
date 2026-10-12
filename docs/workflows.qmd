@@ -92,21 +92,26 @@ authed = auth["client"]
 si.send_password_reset(authed)
 si.delete_account(authed)
 
-# Request history and quotas
+# Request history and fair-use limits
 si.get_requests(authed)
 si.get_subscription(authed)
 si.get_usage(authed, start_date="2025-01-01")
 si.get_remaining_queries(authed)
 ```
 
-### Subscription tiers
+### Fair-use limits
 
-Every user has a subscription tier.  The **free** tier allows a limited
-number of queries per month (currently 100 sq km queries).  The
-**developer** tier (for the core team) has no limit.
+The scorecard is free to use.  Each account has rolling fair-use limits
+so the shared compute stays available to everyone.  On the free tier:
 
-Usage is tracked as the product of `area` (polygon sq km) and `n_keywords`
-for each request.
+- 200 requests per day and 30 requests per hour;
+- 50,000 km² of drawn area per day and 15,000 km² per hour;
+- 3 requests running at once (further requests wait in a queue).
+
+`get_remaining_queries()` returns one row with each limit, what you have
+used in the current hour and day, how many requests are left, and when
+each window resets.  Limits that do not apply to an account (unlimited)
+are shown as missing values (`NaN`).
 
 ## Implemented client functions
 
@@ -147,4 +152,4 @@ for each request.
 | `get_requests()` | List request history |
 | `get_subscription()` | Get subscription profile |
 | `get_usage()` | Get usage summary |
-| `get_remaining_queries()` | Get remaining monthly quota |
+| `get_remaining_queries()` | Get fair-use limits, usage, and requests left |

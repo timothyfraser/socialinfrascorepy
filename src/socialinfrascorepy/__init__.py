@@ -42,7 +42,7 @@ from socialinfrascorepy._account import (
 )
 from socialinfrascorepy._utils import SIScorecardError
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "SIClient",

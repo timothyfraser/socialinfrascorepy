@@ -88,7 +88,7 @@ quartodoc:
         - get_requests
 
     - title: Account and Usage
-      desc: Subscription tier, usage summary, and remaining quota.
+      desc: Account tier, usage summary, and fair-use limits.
       contents:
         - get_subscription
         - get_usage
